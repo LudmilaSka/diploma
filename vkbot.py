@@ -18,24 +18,19 @@ for event in VkLongPoll(session).listen():
         if request == 'новый поиск':
             create_tables(engine)
             bot.user_info(user_id)
-            while True:
+            bot.userseach(user_id)
+            bot.get_photo(user_id)
+            bot.show_found_person(user_id)
+            write_msg(user_id, '1 - выбрать,  0 - пропустить, \nq - выход из поиска')
+            if request == '1':
+                save_user(vk_id, vk_profile_id)
+                write_msg(user_id, f' Отличный выбор')
+            elif request == '0':
                 bot.userseach(user_id)
-                if check_vk_profile_id(profile_id) == False:
-                    bot.userseach(user_id)
-        else:
-            break
-    bot.get_photo(user_id)
-    bot.show_found_person(user_id)
-    write_msg(user_id, '1 - выбрать,  0 - пропустить, \nq - выход из поиска')
-    if request == '1':
-        save_user(vk_id, vk_profile_id)
-        write_msg(user_id, f' Отличный выбор')
-    elif request == '0':
-        bot.userseach(user_id)
-        bot.get_photo(user_id)
-        bot.show_found_person(user_id)
-    elif request == 'q':
-        write_msg(user_id, 'Введите Vkinder для активации бота')
+                bot.get_photo(user_id)
+                bot.show_found_person(user_id)
+            elif request == 'q':
+                write_msg(user_id, 'Введите Vkinder для активации бота')
 
 
 
