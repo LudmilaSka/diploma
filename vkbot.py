@@ -3,9 +3,9 @@ import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import user_token, comm_token, offset, line
 from fun import bot
-from models import User
+from models import User, check_vk_profile_id, create_tables
 from bdorm import engine
-from models import check_vk_profile_id
+
 
 
 session = vk_api.VkApi(token=comm_token)
