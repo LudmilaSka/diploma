@@ -50,7 +50,7 @@ class Bot:
             age_from = ((year_now - year) - 5)
             age_to = ((year_now - year) + 5)
         dict_info = {'sex' : find_sex , 'city' : title_city, 'age_from' : age_from , 'age_to' : age_to}
-        print (dict_info)
+
         return dict_info
 
 
@@ -85,7 +85,7 @@ class Bot:
                                   'extended': 1,
                                   'photo_sizes': 1,
                               })
-        print(response)
+
         dict_photos = dict()
         for i in response['items']:
             photo_id = str(i["id"])
@@ -93,13 +93,11 @@ class Bot:
             if i_likes["count"]:
                 likes = i_likes["count"]
                 dict_photos[likes] = photo_id
-        print(dict_photos)
+
         list_of_ids = sorted(dict_photos.items(), reverse=True)
-        print(list_of_ids)
         list_id_photo = []
         for i in  list_of_ids:
             list_id_photo.append(i[1])
-        print(list_id_photo)
         count = 0
         attachments = []
 
@@ -140,7 +138,7 @@ class Bot:
 
 bot = Bot()
 
-bot.get_photo(68343)
+
 
         
 
