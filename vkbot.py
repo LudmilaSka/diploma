@@ -19,6 +19,7 @@ for event in VkLongPoll(session).listen():
             create_tables(engine)
             bot.user_info(user_id)
             bot.userseach(user_id)
+            check_profile_id(profile_id)
             bot.get_photo(user_id)
             bot.show_found_person(user_id)
             write_msg(user_id, '1 - выбрать,  0 - пропустить, \nq - выход из поиска')
