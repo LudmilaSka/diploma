@@ -2,11 +2,10 @@ from random import randrange
 import vk_api
 from vk_api.longpoll import VkLongPoll, VkEventType
 from config import user_token, comm_token, offset, line
-import requests
-import datetime
 from fun import bot
-from models import create_tables, User
-
+from models import User
+from bdorm import engine
+from models import check_vk_profile_id
 
 
 session = vk_api.VkApi(token=comm_token)
@@ -16,26 +15,26 @@ for event in VkLongPoll(session).listen():
         request = event.text.lower()
         user_id = event.user_id
 
-if request == 'новый поиск':
-    create_tables(engine)
-    bot.user_info(user_id)
-    while True:
-        bot.userseach(user_id)
-        if check_vk_profile_id(profile_id) == False:
-            bot.userseach(user_id)
+        if request == 'новый поиск':
+            create_tables(engine)
+            bot.user_info(user_id)
+            while True:
+                bot.userseach(user_id)
+                if check_vk_profile_id(profile_id) == False:
+                    bot.userseach(user_id)
         else:
             break
     bot.get_photo(user_id)
     bot.show_found_person(user_id)
     write_msg(user_id, '1 - выбрать,  0 - пропустить, \nq - выход из поиска')
-    if msg_text == '1':
+    if request == '1':
         save_user(vk_id, vk_profile_id)
         write_msg(user_id, f' Отличный выбор')
-    elif msg_text == '0':
+    elif request == '0':
         bot.userseach(user_id)
         bot.get_photo(user_id)
         bot.show_found_person(user_id)
-    elif msg_text == 'q':
+    elif request == 'q':
         write_msg(user_id, 'Введите Vkinder для активации бота')
 
 
