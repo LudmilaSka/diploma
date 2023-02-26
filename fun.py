@@ -3,7 +3,7 @@ from config import user_token, comm_token, offset, line
 import datetime
 from random import randrange
 from vk_api.longpoll import VkLongPoll, VkEventType
-
+import operator
 
 class Bot:
     def __init__(self):
@@ -19,29 +19,40 @@ class Bot:
 
     def user_info(self, user_id):
         resp = self.session.method("users.get",{"user_id" : user_id, "fields" : "sex , city , bdate"})
-        try:
-            for i in resp:
-                first_name = i.get('first_name')
-            for s in resp:
+
+
+        for i in resp:
+            first_name = i.get('first_name')
+        for s in resp:
+            try:
                 sex = s.get('sex')
                 if sex == 2:
                     find_sex = 1
                 elif sex == 1:
                     find_sex = 2
-            for c in resp:
+            except TypeError:
+                self.write_msg(user_id, 'Профиль не заполнен ')
+        for c in resp:
+            try:
                 city = c.get('city')
-            title_city = city['title']
-            for bd in resp:
+                title_city = city['title']
+            except TypeError:
+                self.write_msg(user_id, 'Профиль не заполнен ')
+
+        for bd in resp:
+            try:
                 bdate = bd.get('bdate')
+            except TypeError:
+                self.write_msg(user_id, 'Профиль не заполнен ')
             date_list = bdate.split('.')
             year = int(date_list[2])
             year_now = int(datetime.date.today().year)
             age_from = ((year_now - year) - 5)
             age_to = ((year_now - year) + 5)
-            dict_info = {'sex' : find_sex , 'city' : title_city, 'age_from' : age_from , 'age_to' : age_to}
-            return dict_info
-        except TypeError:
-            self.write_msg(user_id, 'Профиль не заполнен ')
+        dict_info = {'sex' : find_sex , 'city' : title_city, 'age_from' : age_from , 'age_to' : age_to}
+        print (dict_info)
+        return dict_info
+
 
     def userseach(self, user_id):
         dict_info = self.user_info(user_id)
@@ -55,11 +66,13 @@ class Bot:
                                                    'fields': 'is_closed',
                                                    'hometown': dict_info['city']
                                                    })
+
+
+
         for element in response['items']:
             if not element["is_closed"]:
                 profile_id = element.get('id')
-     
-        return profile_id
+                return profile_id
 
     def get_photo(self, user_id):
         owner_id = self.userseach(user_id)
@@ -72,6 +85,7 @@ class Bot:
                                   'extended': 1,
                                   'photo_sizes': 1,
                               })
+        print(response)
         dict_photos = dict()
         for i in response['items']:
             photo_id = str(i["id"])
@@ -79,22 +93,29 @@ class Bot:
             if i_likes["count"]:
                 likes = i_likes["count"]
                 dict_photos[likes] = photo_id
+        print(dict_photos)
         list_of_ids = sorted(dict_photos.items(), reverse=True)
+        print(list_of_ids)
+        list_id_photo = []
+        for i in  list_of_ids:
+            list_id_photo.append(i[1])
+        print(list_id_photo)
+        count = 0
         attachments = []
-        photo_ids = []
-        for i in list_of_ids:
-            photo_ids.append(i[1])
-        try:
-            attachments.append('photo{}_{}'.format(user_id, photo_ids[0]))
-            attachments.append('photo{}_{}'.format(user_id, photo_ids[1]))
-            attachments.append('photo{}_{}'.format(user_id, photo_ids[2]))
-           
-            return attachments
-        except IndexError:
-            attachments.append('photo{}_{}'.format(user_id, photo_ids[0]))
-           
-            return attachments
 
+        for id_photo in list_id_photo:
+            count += 1
+
+
+            if  1 <= count <= 3:
+                attachments.append('photo{}_{}'.format(user_id, id_photo))
+                return (attachments)
+            elif 1 <= count <= 2:
+                attachments.append('photo{}_{}'.format(user_id, id_photo))
+                return attachments
+            elif count == 1:
+                attachments.append('photo{}_{}'.format(user_id, id_photo))
+                return attachments
 
     def send_photo(self, user_id, message, attachments):
 
@@ -105,6 +126,7 @@ class Bot:
                                         'random_id': randrange(10 ** 7),
                                         'attachment': ",".join(attachments)
                                        })
+
 
 
     def show_found_person(self, user_id):
@@ -118,7 +140,7 @@ class Bot:
 
 bot = Bot()
 
-
+bot.get_photo(68343)
 
         
 
