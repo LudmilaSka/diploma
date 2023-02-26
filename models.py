@@ -1,5 +1,6 @@
 import sqlalchemy as sq
 from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from bdorm import Session
 
 
 
@@ -16,23 +17,13 @@ def create_tables(engine):
 
 
 def save_user(vk_id, profile_id):
-    try:
-        new_user = User(vk_id=user_id, vk_profile=profile_id )
-        session.add(new_user)
-        session.commit()
-        return True
-    except (IntegrityError, InvalidRequestError):
-        write_msg(event_id,
-                  'Пользователь уже добавлен в базу.')
-        return False
+    new_user = User(vk_id=user_id, vk_profile=profile_id )
+    session.add(new_user)
+    session.commit()
 
 def check_profile_id(profile_id):
-    try:
-        current_user_id = session.query(User).filter_by(User.profile_id.IS_NULL).all()
-        return True
-    except (IntegrityError, InvalidRequestError):
-        write_msg(event_id,
-                  'Анкета уже добавлена в базу.')
-        return False
+    current_user_id = session.query(User).filter_by(User.profile_id.IS_NULL).all()
+    return current_user_id
+
 
     
