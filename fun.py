@@ -141,21 +141,3 @@ class VkTools:
 
 
 tools = VkTools(user_token)
-# tools.check_profile(68343, 784208873, offset)
-#tools.userseach(68343)
-
-# tools.photos_get(68343)
-
-
-    # print(tools.userseach(68343))
-    # info = tools.user_info(user_id='user_id')
-    # if info:
-    #     print(tools.user_info(68343))
-    # else:
-    #     pass #Сообщаем об ошибке заполните профиль
-    # profiles = tools.userseach(68343)
-    # print(profiles)
-# photos = tools.photos_get(68343)
-tools.get_profile(784453676)
-tools.show_found_person(784453676)
-# tools.person_id(offset)
