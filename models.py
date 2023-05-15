@@ -9,7 +9,7 @@ from config import DSN, engine
 engine = sqlalchemy.create_engine(DSN)
 Session = sessionmaker(bind=engine)
 session = Session()
-#metadata = MetaData
+
 Base = declarative_base()
 class User(Base):
     __tablename__ = 'user'
@@ -27,12 +27,12 @@ def save_user(profile_id, worksheet_id):
     session.commit()
 
 def check_profile_id(profile_id):
-    from_bd = session.query(User).filter(User.profile_id==profile_id).all()
+    from_bd = session.query(User).filter(User.profile_id == profile_id).all()
     return from_bd
 
 if __name__ == '__main__':
     Base.metadata.create_all(engine)
-    #Base.metadata.drop_all(engine)
+
 
 
 
