@@ -126,9 +126,11 @@ class VkTools:
                                         'attachment': self.photos_get(profile_id)
                                        })
 
-
-
-
+    def check_in_bd(self, profile_id):
+        list_profile_id = []
+        for s in check_profile_id(profile_id=profile_id):
+            list_profile_id.append(s.profile_id)
+        return list_profile_id
 
 
 tools = VkTools(user_token)
