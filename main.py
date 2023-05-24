@@ -27,12 +27,9 @@ class Bot:
                     self.write_msg(event.user_id, 'и тебе привет')
                 elif event.text.lower() == 'поиск':
                     name_profile = tools.userseach(user_id=event.user_id, offset=self.offset)
-                    for pr_id in name_profile:
-                        profile_id = pr_id['id']
+                    profile_id = name_profile.pop()['id']
                     if profile_id in tools.check_in_bd(profile_id=profile_id):
-                        for i in line:
-                            self.offset += 11
-                            break
+                        self.offset += 11
                         self.write_msg(user_id=event.user_id, text=tools.get_profile(profile_id=profile_id))
                         tools.send_photo(user_id=event.user_id, message='фото',
                                                  attachments=tools.photos_get(profile_id), profile_id=profile_id)
@@ -41,32 +38,44 @@ class Bot:
                     else:
                         tools.user_info(user_id=event.user_id)
                         name_profile = tools.userseach(user_id=event.user_id, offset=self.offset)
-                        for pr_id in name_profile:
-                            profile_id = pr_id['id']
+                        profile_id = name_profile.pop()['id']
                         tools.get_profile(profile_id=profile_id)
                         save_user(profile_id=profile_id, worksheet_id=event.user_id)
                         self.write_msg(user_id=event.user_id, text=tools.get_profile(profile_id=profile_id))
                         tools.send_photo(user_id=event.user_id, message='фото',
                                              attachments=tools.photos_get(profile_id), profile_id=profile_id)
                 elif event.text.lower() == 'далее':
-                    for i in line:
+                    if len(tools.userseach(user_id=event.user_id, offset=self.offset)) == 0:
                         self.offset += 11
                         name_profile = tools.userseach(user_id=event.user_id, offset=self.offset)
-                        for pr_id in name_profile:
-                            profile_id = pr_id['id']
+                        profile_id = name_profile['id']
                         if profile_id in tools.check_in_bd(profile_id=profile_id):
-                            for i in line:
-                                self.offset += 11
-                                break
+                            self.offset += 11
                             self.write_msg(user_id=event.user_id, text=tools.get_profile(profile_id=profile_id))
                             tools.send_photo(user_id=event.user_id, message='фото',
                                              attachments=tools.photos_get(profile_id), profile_id=profile_id)
                             save_user(profile_id=profile_id, worksheet_id=event.user_id)
                         else:
                             self.write_msg(user_id=event.user_id, text=tools.get_profile(profile_id=profile_id))
-                            tools.send_photo(user_id=event.user_id, message='фото', attachments=tools.photos_get(profile_id), profile_id=profile_id )
+                            tools.send_photo(user_id=event.user_id, message='фото',
+                                             attachments=tools.photos_get(profile_id), profile_id=profile_id)
                             save_user(profile_id=profile_id, worksheet_id=event.user_id)
-                        break
+                    else:
+                        name_profile = tools.userseach(user_id=event.user_id, offset=self.offset)
+                        profile_id = name_profile.pop()['id']
+                        tools.get_profile(profile_id=profile_id)
+                        if profile_id in tools.check_in_bd(profile_id=profile_id):
+                            self.offset += 11
+                            self.write_msg(user_id=event.user_id, text=tools.get_profile(profile_id=profile_id))
+                            tools.send_photo(user_id=event.user_id, message='фото',
+                                             attachments=tools.photos_get(profile_id), profile_id=profile_id)
+                            save_user(profile_id=profile_id, worksheet_id=event.user_id)
+                        else:
+                            self.write_msg(user_id=event.user_id, text=tools.get_profile(profile_id=profile_id))
+                            tools.send_photo(user_id=event.user_id, message='фото',
+                                             attachments=tools.photos_get(profile_id), profile_id=profile_id)
+                            save_user(profile_id=profile_id, worksheet_id=event.user_id)
+
                 else:
                     self.write_msg(event.user_id, 'неизвестная команда')
 
